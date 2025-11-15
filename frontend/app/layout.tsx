@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/layouts/Navbar";
+import Script from "next/script";
+import Analytics from "./Analytics"; // 👈 added
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,17 +21,27 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <main className="">
-          {children}
-        </main>
+      <head>
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-L0RKRLMSVW"
+        />
+        <Script id="google-analytics">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-L0RKRLMSVW');
+          `}
+        </Script>
+      </head>
+
+      <body>
+        <Analytics />  {/* 👈 Client component here */}
+        <main>{children}</main>
       </body>
     </html>
   );
